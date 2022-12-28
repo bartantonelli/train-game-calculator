@@ -2,14 +2,16 @@ import React from "react";
 import styled from "styled-components";
 
 import { Typography, Link, Paper } from "@mui/material";
+import { BASE_ROUTE } from "../App";
+import { Links } from "../links";
 
 const MenuBar = () => {
   return (
     <StyledPaper>
-      <StyledLink href="/">
+      <StyledLink href={BASE_ROUTE + Links.Home}>
         <StyledTypography>{"Home"}</StyledTypography>
       </StyledLink>
-      <StyledLink href="/about">
+      <StyledLink href={BASE_ROUTE + Links.About}>
         <StyledTypography>{"About"}</StyledTypography>
       </StyledLink>
     </StyledPaper>
