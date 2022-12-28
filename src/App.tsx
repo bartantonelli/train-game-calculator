@@ -6,7 +6,7 @@ import TrainGame from "./components/TrainGame/TrainGame";
 import { About } from "./components/About";
 import { Links } from "./links";
 
-export const BASE_ROUTE = "/train-game-calculator"
+export const BASE_ROUTE = "/train-game-calculator";
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
       <MenuBar />
       <div className="App">
         <Routes>
-          <Route path={BASE_ROUTE+Links.Home} element={<TrainGame />} />
-          <Route path={BASE_ROUTE+Links.About} element={<About />} />
+          <Route path={Links.Home} element={<TrainGame />} />
+          <Route path={Links.About} element={<About />} />
         </Routes>
       </div>
     </>
