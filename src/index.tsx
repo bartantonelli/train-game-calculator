@@ -4,10 +4,15 @@ import App, { BASE_ROUTE } from "./App";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import posthog from "posthog-js";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+posthog.init("phc_uz6lMrMkrkZxE3XNSNYtljthqXm40sT3FTpmrlW0AN7", {
+  api_host: "https://app.posthog.com",
+});
 root.render(
   // <React.StrictMode>
   <BrowserRouter basename={BASE_ROUTE}>

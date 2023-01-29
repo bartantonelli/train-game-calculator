@@ -9,6 +9,7 @@ import {
 import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { trainGameCalculator } from "./trainGameCalculator";
+import posthog from "posthog-js";
 
 export const TRAIN_NUMBER_LENGTH = 4;
 export const GAME_TARGET = 10;
@@ -48,8 +49,12 @@ function TrainGame({
                 value={trainNumber}
                 onChange={(e) => {
                   setShowResults(false);
-                  if (isValidTrainNumber(e.target.value))
+                  if (isValidTrainNumber(e.target.value)) {
+                    posthog.capture("trainNumberEntered", {
+                      number: e.target.value,
+                    });
                     setTrainNumber(e.target.value);
+                  }
                 }}
               />
             )}
