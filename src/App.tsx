@@ -5,6 +5,7 @@ import "./App.css";
 import TrainGame from "./components/TrainGame/TrainGame";
 import { About } from "./components/About";
 import { Links } from "./links";
+import Practice from "./components/Practice";
 
 export const BASE_ROUTE = "/train-game-calculator";
 
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path={Links.Home} element={<TrainGame />} />
           <Route path={Links.About} element={<About />} />
+          <Route path={Links.Practice} element={<Practice />} />
         </Routes>
       </div>
     </>

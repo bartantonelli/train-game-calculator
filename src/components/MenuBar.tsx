@@ -8,11 +8,14 @@ import { Links } from "../links";
 const MenuBar = () => {
   return (
     <StyledPaper>
-      <StyledLink href={BASE_ROUTE + Links.Home}>
+      <StyledLink href={BASE_ROUTE + Links.About}>
         <StyledTypography>{"Home"}</StyledTypography>
       </StyledLink>
-      <StyledLink href={BASE_ROUTE + Links.About}>
-        <StyledTypography>{"About"}</StyledTypography>
+      <StyledLink href={BASE_ROUTE + Links.Home}>
+        <StyledTypography>{"Calculator"}</StyledTypography>
+      </StyledLink>
+      <StyledLink href={BASE_ROUTE + Links.Practice}>
+        <StyledTypography>{"Practice"}</StyledTypography>
       </StyledLink>
     </StyledPaper>
   );
