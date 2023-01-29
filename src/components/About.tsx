@@ -1,7 +1,13 @@
 import { Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, styled } from "@mui/system";
 import React from "react";
 import { Helmet } from "react-helmet";
+
+const StyledBox = styled(Box)`
+  background-color: #f0f0f0;
+  padding: 2rem;
+  border-radius: 10px;
+`;
 
 export function About() {
   return (
@@ -13,8 +19,8 @@ export function About() {
           content="Learn more about the exciting and challenging game of The Train Game, where players use their creative problem-solving abilities to reach the ultimate destination: the number 10"
         />
       </Helmet>
-      <Box maxWidth="800px" mx="auto">
-        <Typography variant="h2" align="center" my={5}>
+      <StyledBox maxWidth="800px" mx="auto">
+        <Typography variant="h2" align="center" my={2}>
           Welcome to The Train Game!
         </Typography>
         <Typography variant="body1" align="center" my={2}>
@@ -35,7 +41,7 @@ export function About() {
           your seat. So, climb aboard and put your math skills to the test in
           this exciting adventure!
         </Typography>
-      </Box>
+      </StyledBox>
     </>
   );
 }

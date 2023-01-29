@@ -1,21 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-
 import { Typography, Link, Paper } from "@mui/material";
 import { BASE_ROUTE } from "../App";
 import { Links } from "../links";
 
 const MenuBar = () => {
   return (
-    <StyledPaper>
+    <StyledPaper elevation={3}>
       <StyledLink href={BASE_ROUTE + Links.About}>
-        <StyledTypography>{"Home"}</StyledTypography>
+        <StyledTypography variant="h6">{"Home"}</StyledTypography>
       </StyledLink>
       <StyledLink href={BASE_ROUTE + Links.Home}>
-        <StyledTypography>{"Calculator"}</StyledTypography>
+        <StyledTypography variant="h6">{"Calculator"}</StyledTypography>
       </StyledLink>
       <StyledLink href={BASE_ROUTE + Links.Practice}>
-        <StyledTypography>{"Practice"}</StyledTypography>
+        <StyledTypography variant="h6">{"Practice (Beta)"}</StyledTypography>
       </StyledLink>
     </StyledPaper>
   );
@@ -23,22 +22,31 @@ const MenuBar = () => {
 
 const StyledPaper = styled(Paper)`
   && {
-    background-color: darkblue;
+    background: linear-gradient(to right, #5e72e4, #825ee4);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
+    box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    padding: 1rem;
   }
 `;
 
 const StyledLink = styled(Link)`
   padding: 1rem;
+  &:hover {
+    background-color: #3f51b5;
+  }
 `;
 
 const StyledTypography = styled(Typography)`
-  color: gray;
-  text-transform: capitalize;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
   &:hover {
-    background-color: lightblue;
+    background-color: #3f51b5;
+    color: white;
   }
 `;
 
