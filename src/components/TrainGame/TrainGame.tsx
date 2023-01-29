@@ -35,30 +35,33 @@ function TrainGame({
   const [showResults, setShowResults] = useState<boolean>(false);
   return (
     <div>
-      <Box pt="1rem" justifyContent="center">
+      <Box pt="1rem" justifyContent="center" p="1rem">
         <Box alignItems="center" display="flex" justifyContent="center">
           <Typography>{"Train Number"}</Typography>
-          <Box sx={{ ml: "1rem", width: "5rem", height: "2rem" }}>
-            {controlledTrainNumber ? (
-              <Typography sx={{ width: "100%", height: "100%" }}>
-                {controlledTrainNumber}
-              </Typography>
-            ) : (
-              <OutlinedInput
-                sx={{ width: "100%", height: "100%" }}
-                value={trainNumber}
-                onChange={(e) => {
-                  setShowResults(false);
-                  if (isValidTrainNumber(e.target.value)) {
-                    posthog.capture("trainNumberEntered", {
-                      number: e.target.value,
-                    });
-                    setTrainNumber(e.target.value);
-                  }
-                }}
-              />
-            )}
-          </Box>
+          {controlledTrainNumber && (
+            <Typography sx={{ fontWeight: "bold" }} pl="1rem">
+              {controlledTrainNumber}
+            </Typography>
+          )}
+          {controlledTrainNumber ? (
+            <></>
+          ) : (
+            <OutlinedInput
+              sx={{ width: "5rem", height: "2rem", ml: "1rem" }}
+              value={trainNumber}
+              autoFocus
+              onChange={(e) => {
+                setShowResults(false);
+                if (isValidTrainNumber(e.target.value)) {
+                  posthog.capture("trainNumberEntered", {
+                    number: e.target.value,
+                  });
+                  setTrainNumber(e.target.value);
+                }
+              }}
+            />
+          )}
+
           <Typography p="1rem">{"Advanced Operators"}</Typography>
           <Switch
             value={useAdvancedOperators}
@@ -75,8 +78,15 @@ function TrainGame({
           </Typography>
           <Button
             variant="contained"
+            disabled={
+              !isCompleteTrainNumber(currentTrainNumber) || !results.length
+            }
             onClick={() => setShowResults(!showResults)}
-            sx={{ mt: "1rem" }}
+            sx={{
+              mt: "1rem",
+              // make the colour of the button change depending on whether the results are shown or not
+              bgcolor: showResults ? "red" : "green",
+            }}
           >
             {" "}
             {showResults ? "Hide Results" : "Show Results"}

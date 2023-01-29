@@ -20,7 +20,7 @@ export function About() {
         />
       </Helmet>
       <StyledBox maxWidth="800px" mx="auto">
-        <Typography variant="h2" align="center" my={2}>
+        <Typography variant="h2" align="center">
           Welcome to The Train Game!
         </Typography>
         <Typography variant="body1" align="center" my={2}>
