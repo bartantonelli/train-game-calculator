@@ -16,6 +16,9 @@ const MenuBar = () => {
       <StyledLink href={BASE_ROUTE + Links.Practice}>
         <StyledTypography variant="h6">{"Practice (Beta)"}</StyledTypography>
       </StyledLink>
+      <StyledLink href={BASE_ROUTE + Links.LiveVs}>
+        <StyledTypography variant="h6">{"LiveVs (Beta)"}</StyledTypography>
+      </StyledLink>
     </StyledPaper>
   );
 };
