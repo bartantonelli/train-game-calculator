@@ -41,7 +41,13 @@ function TrainGame({
   return (
     <div>
       <Box pt="1rem" justifyContent="center" p="1rem">
-        <Box alignItems="center" display="flex" justifyContent="center">
+        <Box
+          alignItems="center"
+          display="flex"
+          justifyContent="center"
+          gap="2rem"
+          flexWrap="wrap"
+        >
           <Typography>{"Train Number"}</Typography>
           {controlledTrainNumber && (
             <Typography sx={{ fontWeight: "bold" }} pl="1rem">
@@ -52,7 +58,12 @@ function TrainGame({
             <></>
           ) : (
             <OutlinedInput
-              sx={{ width: "5rem", height: "2rem", ml: "1rem" }}
+              sx={{
+                minWidth: "5rem",
+                width: "5rem",
+                height: "2rem",
+                ml: "1rem",
+              }}
               value={trainNumber}
               autoFocus
               onChange={(e) => {
@@ -66,17 +77,22 @@ function TrainGame({
               }}
             />
           )}
-
-          <Typography p="1rem">{"Advanced Operators"}</Typography>
-          <Switch
-            value={useAdvancedOperators}
-            onChange={(e) => setUseAdvancedOperators(e.target.checked)}
-          />
-          <Typography p="1rem">{"In Order Only"}</Typography>
-          <Switch
-            value={useAdvancedOperators}
-            onChange={(e) => setInOrder(e.target.checked)}
-          />
+          <Box display="flex" flexDirection="column">
+            <Box display="flex" alignItems="center" justifyContent="right">
+              <Typography p="1rem">{"Advanced Operators"}</Typography>
+              <Switch
+                value={useAdvancedOperators}
+                onChange={(e) => setUseAdvancedOperators(e.target.checked)}
+              />
+            </Box>
+            <Box display="flex" alignItems="center" justifyContent="right">
+              <Typography p="1rem">{"In Order Only"}</Typography>
+              <Switch
+                value={useAdvancedOperators}
+                onChange={(e) => setInOrder(e.target.checked)}
+              />
+            </Box>
+          </Box>
         </Box>
         <Box justifyContent="center" pt="1rem">
           <Typography>
