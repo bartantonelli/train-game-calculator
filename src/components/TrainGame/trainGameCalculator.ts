@@ -101,7 +101,8 @@ function applyCalculation({
 
 export function trainGameCalculator(
   trainNum: string,
-  advancedOperators: boolean
+  advancedOperators: boolean,
+  inOrderOnly: boolean
 ): TrainGameResult[] {
   const operators = advancedOperators ? allOperators : basicOperators;
   if (!isCompleteTrainNumber(trainNum)) return [];
@@ -110,30 +111,32 @@ export function trainGameCalculator(
 
   const numberPerms = permutator(individualNumbers);
 
-  const outcomes = numberPerms.flatMap((fourNumbers) => {
-    let workInProgress: Progress[] = [
-      { remainingNums: fourNumbers, displayString: "" },
-    ];
-    for (let i = 0; i < TRAIN_NUMBER_LENGTH - 1; i++) {
-      const nextWorkInProgress = workInProgress.flatMap((progress) => {
-        return Object.entries(operators).flatMap(([operator, calculator]) => {
-          try {
-            return applyCalculation({
-              nums: progress.remainingNums,
-              displayString: progress.displayString,
-              operator,
-              calculator,
-            });
-          } catch {
-            return [] as Progress[];
-          }
+  const outcomes = (inOrderOnly ? [individualNumbers] : numberPerms).flatMap(
+    (fourNumbers) => {
+      let workInProgress: Progress[] = [
+        { remainingNums: fourNumbers, displayString: "" },
+      ];
+      for (let i = 0; i < TRAIN_NUMBER_LENGTH - 1; i++) {
+        const nextWorkInProgress = workInProgress.flatMap((progress) => {
+          return Object.entries(operators).flatMap(([operator, calculator]) => {
+            try {
+              return applyCalculation({
+                nums: progress.remainingNums,
+                displayString: progress.displayString,
+                operator,
+                calculator,
+              });
+            } catch {
+              return [] as Progress[];
+            }
+          });
         });
-      });
-      workInProgress = nextWorkInProgress;
+        workInProgress = nextWorkInProgress;
+      }
+      return workInProgress
+        .filter((progress) => progress.remainingNums[0] === GAME_TARGET)
+        .map((progress) => progress.displayString.slice(1, -1));
     }
-    return workInProgress
-      .filter((progress) => progress.remainingNums[0] === GAME_TARGET)
-      .map((progress) => progress.displayString.slice(1, -1));
-  });
+  );
   return Array.from(new Set(outcomes).values());
 }

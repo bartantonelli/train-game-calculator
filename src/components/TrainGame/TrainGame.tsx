@@ -1,3 +1,4 @@
+import { trainGameCalculator } from "./trainGameCalculator";
 import {
   Button,
   List,
@@ -7,9 +8,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState } from "react";
-import { trainGameCalculator } from "./trainGameCalculator";
 import posthog from "posthog-js";
+import React, { useState } from "react";
 
 export const TRAIN_NUMBER_LENGTH = 4;
 export const GAME_TARGET = 10;
@@ -30,8 +30,13 @@ function TrainGame({
   const [trainNumber, setTrainNumber] = useState<string>("");
   const [useAdvancedOperators, setUseAdvancedOperators] =
     useState<boolean>(false);
+  const [inOrder, setInOrder] = useState<boolean>(false);
   const currentTrainNumber = controlledTrainNumber || trainNumber;
-  const results = trainGameCalculator(currentTrainNumber, useAdvancedOperators);
+  const results = trainGameCalculator(
+    currentTrainNumber,
+    useAdvancedOperators,
+    inOrder
+  );
   const [showResults, setShowResults] = useState<boolean>(false);
   return (
     <div>
@@ -66,6 +71,11 @@ function TrainGame({
           <Switch
             value={useAdvancedOperators}
             onChange={(e) => setUseAdvancedOperators(e.target.checked)}
+          />
+          <Typography p="1rem">{"In Order Only"}</Typography>
+          <Switch
+            value={useAdvancedOperators}
+            onChange={(e) => setInOrder(e.target.checked)}
           />
         </Box>
         <Box justifyContent="center" pt="1rem">
