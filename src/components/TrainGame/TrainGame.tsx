@@ -60,6 +60,7 @@ function TrainGame({
                 ml: "1rem",
               }}
               value={trainNumber}
+              type="number"
               autoFocus
               onChange={(e) => {
                 setShowResults(false);
