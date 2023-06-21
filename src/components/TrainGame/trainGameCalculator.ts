@@ -1,8 +1,4 @@
-import {
-  GAME_TARGET,
-  TRAIN_NUMBER_LENGTH,
-  isCompleteTrainNumber,
-} from "./TrainGame";
+import { GAME_TARGET, isCompleteTrainNumber } from "./TrainGame";
 
 export type TrainGameResult = String;
 
@@ -19,11 +15,6 @@ enum AdvancedOperator {
   Power = "^",
   Modulo = "%",
 }
-
-type Progress = {
-  displayString: string;
-  remainingNums: number[];
-};
 
 const basicOperators: Record<BasicOperator, Calculator> = {
   [BasicOperator.Plus]: function (a: number, b: number): number {
@@ -50,45 +41,42 @@ const advancedOperators: Record<AdvancedOperator, Calculator> = {
 };
 const allOperators = { ...basicOperators, ...advancedOperators };
 
-function permutator<T>(inputArr: T[]): T[][] {
-  const result: T[][] = [];
+function generateRPN(
+  numbers: number[],
+  operators: string[],
+  stack: (string | number)[],
+  stackNetNumbers: number
+): (string | number)[][] {
+  // you can always add another number to the stack, but you can only add an operator if there are
+  // at least 2 net numbers on the stack
+  const validNextElements: (string | number)[] = [
+    ...numbers,
+    ...(stackNetNumbers >= 2 ? operators : []),
+  ];
+  //base case
+  if (!validNextElements.length) return [stack];
+  const validPerms: (string | number)[][] = [];
+  validNextElements.forEach((nextElement) => {
+    try {
+      const remainingNumbers =
+        typeof nextElement === "number"
+          ? numbers
+              .slice()
+              .filter((num, index) => index !== numbers.indexOf(nextElement))
+          : numbers.slice();
 
-  const permute = (arr: T[], m: T[] = []) => {
-    if (arr.length === 0) {
-      result.push(m);
-    } else {
-      for (let i = 0; i < arr.length; i++) {
-        const curr = arr.slice();
-        const next = curr.splice(i, 1);
-        permute(curr.slice(), m.concat(next));
-      }
-    }
-  };
-
-  permute(inputArr);
-
-  return result;
-}
-
-function generateCombinations<T>(items: T[], size: number) {
-  const combinations: T[][] = [];
-
-  function generateHelper(currentCombination: T[], start: number) {
-    if (currentCombination.length === size) {
-      combinations.push(currentCombination.slice()); // Add a copy of the current combination
-      return;
-    }
-
-    for (let i = start; i < items.length; i++) {
-      currentCombination.push(items[i]);
-      generateHelper(currentCombination, i); // Recursive call with updated start index
-      currentCombination.pop();
-    }
-  }
-
-  generateHelper([], 0);
-
-  return combinations;
+      const somePerms = generateRPN(
+        remainingNumbers,
+        operators,
+        [...stack, nextElement],
+        typeof nextElement === "number"
+          ? stackNetNumbers + 1
+          : stackNetNumbers - 1
+      );
+      validPerms.push(...somePerms);
+    } catch {}
+  });
+  return validPerms;
 }
 
 function evaluateRPN(
@@ -123,34 +111,19 @@ function evaluateRPN(
   return stack.pop();
 }
 
-function isOperator(token: string): boolean {
-  return ["+", "-", "*", "/"].includes(token);
-}
-
 function convertToInfix(expression: (number | string)[]): string {
   const stack: string[] = [];
 
   for (const token of expression) {
     if (typeof token === "number") {
       stack.push(token.toString());
-    } else if (isOperator(token)) {
+    } else {
       if (stack.length < 2) {
         throw new Error("Invalid expression");
       }
-
       const operand2 = stack.pop()!;
       const operand1 = stack.pop()!;
-      let result = "";
-
-      if (token === "+" || token === "-") {
-        result = `(${operand1} ${token} ${operand2})`;
-      } else {
-        result = `(${operand1} ${token} ${operand2})`;
-      }
-
-      stack.push(result);
-    } else {
-      throw new Error("Invalid token");
+      stack.push(`(${operand1} ${token} ${operand2})`);
     }
   }
 
@@ -162,11 +135,12 @@ function convertToInfix(expression: (number | string)[]): string {
 }
 
 function isInOrder(solution: string, trainNum: string) {
-  const indexes = trainNum.split("").map((num) => solution.indexOf(num));
-  for (let i = 1; i < indexes.length; i++) {
-    if (indexes[i] < indexes[i - 1]) return false;
-  }
-  return true;
+  return (
+    solution
+      .split("")
+      .filter((character) => parseInt(character) > 0)
+      .join("") === trainNum
+  );
 }
 
 export function trainGameCalculator(
@@ -178,12 +152,12 @@ export function trainGameCalculator(
   if (!isCompleteTrainNumber(trainNum)) return [];
 
   const individualNumbers = trainNum.split("").map((num) => parseFloat(num));
-
-  const operatorSelections = generateCombinations(Object.keys(operators), 3);
-
-  const possibleCombos = operatorSelections.flatMap((ops) => {
-    return permutator([...ops, ...individualNumbers]);
-  });
+  const possibleCombos = generateRPN(
+    individualNumbers,
+    Object.keys(operators),
+    [],
+    0
+  );
   console.log(possibleCombos.length);
   const solutions = possibleCombos
     .flatMap((expression) => {
