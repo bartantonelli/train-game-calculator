@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/train-game-calculator/static/css/main.1daf42ac.css",
-    "main.js": "/train-game-calculator/static/js/main.f60ed0a3.js",
+    "main.js": "/train-game-calculator/static/js/main.33e1b192.js",
     "static/js/787.32550391.chunk.js": "/train-game-calculator/static/js/787.32550391.chunk.js",
     "static/media/KaTeX_AMS-Regular.ttf": "/train-game-calculator/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/train-game-calculator/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
@@ -65,11 +65,11 @@
     "static/media/KaTeX_Size3-Regular.woff2": "/train-game-calculator/static/media/KaTeX_Size3-Regular.e1951519f6f0596f7356.woff2",
     "index.html": "/train-game-calculator/index.html",
     "main.1daf42ac.css.map": "/train-game-calculator/static/css/main.1daf42ac.css.map",
-    "main.f60ed0a3.js.map": "/train-game-calculator/static/js/main.f60ed0a3.js.map",
+    "main.33e1b192.js.map": "/train-game-calculator/static/js/main.33e1b192.js.map",
     "787.32550391.chunk.js.map": "/train-game-calculator/static/js/787.32550391.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1daf42ac.css",
-    "static/js/main.f60ed0a3.js"
+    "static/js/main.33e1b192.js"
   ]
 }
