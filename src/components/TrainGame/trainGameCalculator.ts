@@ -51,7 +51,7 @@ const advancedOperators: Record<AdvancedOperator, Calculator> = {
 const allOperators = { ...basicOperators, ...advancedOperators };
 
 function permutator<T>(inputArr: T[]): T[][] {
-  let result: T[][] = [];
+  const result: T[][] = [];
 
   const permute = (arr: T[], m: T[] = []) => {
     if (arr.length === 0) {
@@ -70,33 +70,103 @@ function permutator<T>(inputArr: T[]): T[][] {
   return result;
 }
 
-function applyCalculation({
-  nums,
-  displayString,
-  operator,
-  calculator,
-}: {
-  nums: number[];
-  displayString: string;
-  operator: string;
-  calculator: Calculator;
-}): Progress {
-  if (nums.length === 1) {
-    return {
-      displayString,
-      remainingNums: nums,
-    };
+function generateCombinations<T>(items: T[], size: number) {
+  const combinations: T[][] = [];
+
+  function generateHelper(currentCombination: T[], start: number) {
+    if (currentCombination.length === size) {
+      combinations.push(currentCombination.slice()); // Add a copy of the current combination
+      return;
+    }
+
+    for (let i = start; i < items.length; i++) {
+      currentCombination.push(items[i]);
+      generateHelper(currentCombination, i); // Recursive call with updated start index
+      currentCombination.pop();
+    }
   }
-  if (nums[1] === 0 && operator === BasicOperator.Divide) {
-    throw new Error();
+
+  generateHelper([], 0);
+
+  return combinations;
+}
+
+function evaluateRPN(
+  expression: (string | number)[],
+  operators: Record<BasicOperator, Calculator>
+) {
+  const stack: number[] = [];
+
+  for (let i = 0; i < expression.length; i++) {
+    const token = expression[i];
+
+    if (typeof token === "number") {
+      stack.push(token);
+    } else {
+      if (stack.length < 2) {
+        throw new Error("Invalid expression");
+      }
+
+      const operand2 = stack.pop();
+      const operand1 = stack.pop();
+      const calculator = operators[token as BasicOperator];
+      if (!operand1 || !operand2 || !calculator) throw new Error("invalid");
+      const result = calculator(operand1, operand2);
+      stack.push(result);
+    }
   }
-  return {
-    remainingNums: [calculator(nums[0], nums[1]), ...nums.slice(2)],
-    displayString:
-      displayString === ""
-        ? `(${nums[0]} ${operator} ${nums[1]})`
-        : `(${displayString} ${operator} ${nums[1]})`,
-  };
+
+  if (stack.length !== 1) {
+    throw new Error("Invalid expression");
+  }
+
+  return stack.pop();
+}
+
+function isOperator(token: string): boolean {
+  return ["+", "-", "*", "/"].includes(token);
+}
+
+function convertToInfix(expression: (number | string)[]): string {
+  const stack: string[] = [];
+
+  for (const token of expression) {
+    if (typeof token === "number") {
+      stack.push(token.toString());
+    } else if (isOperator(token)) {
+      if (stack.length < 2) {
+        throw new Error("Invalid expression");
+      }
+
+      const operand2 = stack.pop()!;
+      const operand1 = stack.pop()!;
+      let result = "";
+
+      if (token === "+" || token === "-") {
+        result = `(${operand1} ${token} ${operand2})`;
+      } else {
+        result = `(${operand1} ${token} ${operand2})`;
+      }
+
+      stack.push(result);
+    } else {
+      throw new Error("Invalid token");
+    }
+  }
+
+  if (stack.length !== 1) {
+    throw new Error("Invalid expression");
+  }
+
+  return stack.pop()!;
+}
+
+function isInOrder(solution: string, trainNum: string) {
+  const indexes = trainNum.split("").map((num) => solution.indexOf(num));
+  for (let i = 1; i < indexes.length; i++) {
+    if (indexes[i] < indexes[i - 1]) return false;
+  }
+  return true;
 }
 
 export function trainGameCalculator(
@@ -109,34 +179,26 @@ export function trainGameCalculator(
 
   const individualNumbers = trainNum.split("").map((num) => parseFloat(num));
 
-  const numberPerms = permutator(individualNumbers);
+  const operatorSelections = generateCombinations(Object.keys(operators), 3);
 
-  const outcomes = (inOrderOnly ? [individualNumbers] : numberPerms).flatMap(
-    (fourNumbers) => {
-      let workInProgress: Progress[] = [
-        { remainingNums: fourNumbers, displayString: "" },
-      ];
-      for (let i = 0; i < TRAIN_NUMBER_LENGTH - 1; i++) {
-        const nextWorkInProgress = workInProgress.flatMap((progress) => {
-          return Object.entries(operators).flatMap(([operator, calculator]) => {
-            try {
-              return applyCalculation({
-                nums: progress.remainingNums,
-                displayString: progress.displayString,
-                operator,
-                calculator,
-              });
-            } catch {
-              return [] as Progress[];
-            }
-          });
-        });
-        workInProgress = nextWorkInProgress;
+  const possibleCombos = operatorSelections.flatMap((ops) => {
+    return permutator([...ops, ...individualNumbers]);
+  });
+  console.log(possibleCombos.length);
+  const solutions = possibleCombos
+    .flatMap((expression) => {
+      try {
+        const result = evaluateRPN(expression, operators);
+        return {
+          result,
+          expression,
+        };
+      } catch {
+        return [];
       }
-      return workInProgress
-        .filter((progress) => progress.remainingNums[0] === GAME_TARGET)
-        .map((progress) => progress.displayString.slice(1, -1));
-    }
-  );
-  return Array.from(new Set(outcomes).values());
+    })
+    .filter((sol) => sol.result === GAME_TARGET)
+    .map((sol) => convertToInfix(sol.expression))
+    .filter((sol) => (inOrderOnly ? isInOrder(sol, trainNum) : true));
+  return Array.from(new Set(solutions).values());
 }
