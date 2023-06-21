@@ -1,15 +1,10 @@
 import { trainGameCalculator } from "./trainGameCalculator";
-import {
-  Button,
-  List,
-  ListItem,
-  OutlinedInput,
-  Switch,
-  Typography,
-} from "@mui/material";
+import { Button, OutlinedInput, Switch, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import posthog from "posthog-js";
 import React, { useState } from "react";
+import Latex from "react-latex-next";
+import "katex/dist/katex.min.css";
 
 export const TRAIN_NUMBER_LENGTH = 4;
 export const GAME_TARGET = 10;
@@ -79,14 +74,14 @@ function TrainGame({
           )}
           <Box display="flex" flexDirection="column">
             <Box display="flex" alignItems="center" justifyContent="right">
-              <Typography p="1rem">{"Advanced Operators"}</Typography>
+              <Typography>{"Advanced Operators"}</Typography>
               <Switch
                 value={useAdvancedOperators}
                 onChange={(e) => setUseAdvancedOperators(e.target.checked)}
               />
             </Box>
             <Box display="flex" alignItems="center" justifyContent="right">
-              <Typography p="1rem">{"In Order Only"}</Typography>
+              <Typography>{"In Order Only"}</Typography>
               <Switch
                 value={useAdvancedOperators}
                 onChange={(e) => setInOrder(e.target.checked)}
@@ -114,17 +109,16 @@ function TrainGame({
               bgcolor: showResults ? "red" : "green",
             }}
           >
-            {" "}
             {showResults ? "Hide Results" : "Show Results"}
           </Button>
           {showResults && results.length > 0 ? (
-            <List>
+            <ul className="grid-container">
               {results.map((result) => (
-                <ListItem sx={{ justifyContent: "center" }}>
-                  <Typography>{result}</Typography>
-                </ListItem>
+                <li className="grid-item">
+                  <Latex>{String.raw`$$${result}$$`}</Latex>
+                </li>
               ))}
-            </List>
+            </ul>
           ) : null}
         </Box>
       </Box>

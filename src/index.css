@@ -11,3 +11,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.grid-container {
+  display: grid;
+  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  /* grid-gap: 2rem; */
+  list-style-type: none;
+}
+
+.grid-item {
+  display: flex;
+  justify-content: center;
+  /* gap: 2rem; */
+  background-color: rgb(128, 137, 139);
+}
+.grid-item:nth-child(2n) {
+  background-color: rgb(255, 255, 255);
+}
+/* .grid-item:nth-child(3n) {
+  background-color: rgb(20, 187, 238);
+} */

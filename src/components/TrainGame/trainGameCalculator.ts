@@ -55,7 +55,7 @@ function generateRPN(
   ];
   //base case
   if (!validNextElements.length) return [stack];
-  const validPerms: (string | number)[][] = [];
+  const validPerms = new Map<string, (string | number)[]>();
   validNextElements.forEach((nextElement) => {
     try {
       const remainingNumbers =
@@ -73,10 +73,10 @@ function generateRPN(
           ? stackNetNumbers + 1
           : stackNetNumbers - 1
       );
-      validPerms.push(...somePerms);
+      somePerms.forEach((perm) => validPerms.set(perm.join(""), perm));
     } catch {}
   });
-  return validPerms;
+  return Array.from(validPerms.values());
 }
 
 function evaluateRPN(
@@ -133,6 +133,34 @@ function convertToInfix(expression: (number | string)[]): string {
 
   return stack.pop()!;
 }
+function convertRPNToLatex(expression: (number | string)[]): string {
+  const stack: string[] = [];
+
+  for (const token of expression) {
+    if (typeof token === "number") {
+      stack.push(token.toString());
+    } else {
+      if (stack.length < 2) {
+        throw new Error("Invalid expression");
+      }
+      const operand2 = stack.pop()!;
+      const operand1 = stack.pop()!;
+      if (token === "/") {
+        stack.push(String.raw`\frac{${operand1}}{${operand2}}`);
+      } else if (token === "*") {
+        stack.push(String.raw`${operand1}\times${operand2}`);
+      } else {
+        stack.push(
+          String.raw`(${operand1}${
+            token === "%" ? String.raw`\mod` : token
+          }${operand2})`
+        );
+      }
+    }
+  }
+
+  return stack.pop()!;
+}
 
 function isInOrder(solution: string, trainNum: string) {
   return (
@@ -163,16 +191,17 @@ export function trainGameCalculator(
     .flatMap((expression) => {
       try {
         const result = evaluateRPN(expression, operators);
+        if (result !== GAME_TARGET) return [];
         return {
           result,
           expression,
+          infix: convertToInfix(expression),
+          latex: convertRPNToLatex(expression),
         };
       } catch {
         return [];
       }
     })
-    .filter((sol) => sol.result === GAME_TARGET)
-    .map((sol) => convertToInfix(sol.expression))
-    .filter((sol) => (inOrderOnly ? isInOrder(sol, trainNum) : true));
-  return Array.from(new Set(solutions).values());
+    .filter((sol) => (inOrderOnly ? isInOrder(sol.infix, trainNum) : true));
+  return solutions.map((sol) => sol.latex);
 }
