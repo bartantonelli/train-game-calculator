@@ -98,8 +98,10 @@ function evaluateRPN(
       const operand2 = stack.pop();
       const operand1 = stack.pop();
       const calculator = operators[token as BasicOperator];
-      if (!operand1 || !operand2 || !calculator) throw new Error("invalid");
+      if (!(operand1 !== undefined && operand2 !== undefined && calculator))
+        throw new Error("Missing operand or calculator");
       const result = calculator(operand1, operand2);
+      if (isNaN(result)) throw new Error("NaN result");
       stack.push(result);
     }
   }
@@ -186,7 +188,7 @@ export function trainGameCalculator(
     [],
     0
   );
-  console.log(possibleCombos.length);
+
   const solutions = possibleCombos
     .flatMap((expression) => {
       try {
@@ -198,7 +200,7 @@ export function trainGameCalculator(
           infix: convertToInfix(expression),
           latex: convertRPNToLatex(expression),
         };
-      } catch {
+      } catch (e) {
         return [];
       }
     })
