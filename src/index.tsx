@@ -11,7 +11,7 @@ const root = ReactDOM.createRoot(
 );
 
 posthog.init("phc_uz6lMrMkrkZxE3XNSNYtljthqXm40sT3FTpmrlW0AN7", {
-  api_host: "https://an.nodont.click",
+  api_host: "https://an.bartantonelli.com",
 });
 root.render(
   // <React.StrictMode>
